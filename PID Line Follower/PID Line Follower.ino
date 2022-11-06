@@ -4,8 +4,12 @@ QTRSensors qtr;
 const uint8_t SensorCount = 5;
 uint16_t sensorValues[SensorCount];
 
-//Straight Line Speed
-int baseSpeedValue = 150;
+//Straight Line Speed [0 --> 255]
+int baseSpeedValue = 75;
+//Max Speed [0 --> 255]
+int maxSpeed = 125;
+//Max reverse Speed [0 --> -255]
+int reverseSpeed = -75;
 
 //Motor Driver Varible and Connections
 int in1 = 8;
@@ -17,9 +21,9 @@ int en2 = 3;
 /////
 
 //PID parameters
-int Kp = 0.07;
-int Ki = 0;
-int Kd = 0.7;
+float Kp = 0.07;
+float Ki = 0.0006;
+float Kd = 0.7;
 
 int lastError = 0;
 
@@ -54,7 +58,7 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-
+  PID_control();
 }
 
 void PID_control(){
@@ -65,7 +69,7 @@ void PID_control(){
 
   int P = error;
   int I = error + I;
-  int D = lastError - error;
+  int D = error - lastError;
   lastError = error;
 
   int motorSpeedChange = P * Kp + I * Ki + D * Kp;
@@ -75,17 +79,17 @@ void PID_control(){
   int motorSpeedA = baseSpeedValue + motorSpeedChange;
   int motorSpeedB = baseSpeedValue + motorSpeedChange;
 
-  if (motorSpeedA > 255){
-    motorSpeedA = 255;
+  if (motorSpeedA > maxSpeed){
+    motorSpeedA = maxSpeed;
   }
-  if (motorSpeedB > 255){
-    motorSpeedB = 255;
+  if (motorSpeedB > maxSpeed){
+    motorSpeedB = maxSpeed;
   }
-  if (motorSpeedA < -75){
-    motorSpeedA = -75;
+  if (motorSpeedA < reverseSpeed){
+    motorSpeedA = reverseSpeed;
   }
-  if (motorSpeedA < -75){
-    motorSpeedA = -75;
+  if (motorSpeedA < reverseSpeed){
+    motorSpeedA = reverseSpeed;
   }
   forward_movement(motorSpeedA, motorSpeedB);
 }
