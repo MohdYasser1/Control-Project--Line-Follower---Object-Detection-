@@ -32,12 +32,12 @@ void setup() {
   //////////
 
   //Motor Driver Pins
-  pinMode(in1, OUTPUT)
-  pinMode(in2, OUTPUT)
-  pinMode(en1, OUTPUT)
-  pinMode(in3, OUTPUT)
-  pinMode(in4, OUTPUT)
-  pinMode(en2, OUTPUT)
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+  pinMode(en1, OUTPUT);
+  pinMode(in3, OUTPUT);
+  pinMode(in4, OUTPUT);
+  pinMode(en2, OUTPUT);
   /////
 }
 
@@ -46,7 +46,7 @@ void loop() {
 
 }
 
-void forward_movement(int speedA, speedB){
+void forward_movement(int speedA, int speedB){
 if (speedA < 0){ //If we want to reverse
   speedA = 0 - speedA;
   digitalWrite(in1, LOW);
