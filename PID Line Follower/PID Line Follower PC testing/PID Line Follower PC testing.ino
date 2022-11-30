@@ -1,4 +1,9 @@
-#include <QTRSensors.h> //Does this work ??
+#include <QTRSensors.h> //Does this work ?? YES
+
+
+void forward_movement(int speedA, int speedB);
+void PID_control();
+
 
 QTRSensors qtr;
 const uint8_t SensorCount = 5;
@@ -34,12 +39,14 @@ void setup() {
   pinMode(in3, OUTPUT);
   pinMode(in4, OUTPUT);
   pinMode(en2, OUTPUT);
+  pinMode(13, OUTPUT); //For pc testing only
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, LOW);
   analogWrite(en1, LOW);
   analogWrite(en2, LOW);
+  digitalWrite(13, HIGH);
   // put your setup code here, to run once:
   // Serial.begin(9600);
   //Sensor pins
@@ -48,7 +55,7 @@ void setup() {
   //////
 
   //Calibration mode 10-Seconds
-  delay(1000);
+  delay(500);
   pinMode(LED_BUILTIN, OUTPUT);
   digitalWrite(LED_BUILTIN, HIGH); // turn on Arduino's LED to indicate we are in calibration mode
   for (uint16_t i = 0; i < 400; i++)
