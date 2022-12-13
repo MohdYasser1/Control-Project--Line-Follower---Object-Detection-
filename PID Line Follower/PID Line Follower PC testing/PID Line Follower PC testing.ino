@@ -10,11 +10,11 @@ const uint8_t SensorCount = 5;
 uint16_t sensorValues[SensorCount];
 
 //Straight Line Speed [0 --> 255]
-int baseSpeedValue = 200;
+int baseSpeedValue = 75;
 //Max Speed [0 --> 255]
-int maxSpeed = 125;
+int maxSpeed = 75;
 //Max reverse Speed [0 --> -255]
-int reverseSpeed = -75;
+int reverseSpeed = -50;
 
 //Motor Driver Varible and Connections
 int in1 = 8;
@@ -26,9 +26,9 @@ int en2 = 3;
 /////
 
 //PID parameters
-float Kp = 100;
-float Ki = 0.0006;
-float Kd = 0.7;
+float Kp = 0.1;
+float Ki = 0.00;
+float Kd = 0.00;
 
 int lastError = 0;
 
@@ -39,7 +39,7 @@ void setup() {
   pinMode(in3, OUTPUT);
   pinMode(in4, OUTPUT);
   pinMode(en2, OUTPUT);
-  pinMode(13, OUTPUT); //For pc testing only
+  // pinMode(13, OUTPUT); //For pc testing only
   digitalWrite(in1, LOW);
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
@@ -130,7 +130,7 @@ void PID_control(){
   //Changing speed of both motor
   //Turning Left and Right
   int motorSpeedA = baseSpeedValue + motorSpeedChange;
-  int motorSpeedB = baseSpeedValue + motorSpeedChange;
+  int motorSpeedB = baseSpeedValue - motorSpeedChange;
 
   if (motorSpeedA > maxSpeed){
     motorSpeedA = maxSpeed;
@@ -141,8 +141,8 @@ void PID_control(){
   if (motorSpeedA < reverseSpeed){
     motorSpeedA = reverseSpeed;
   }
-  if (motorSpeedA < reverseSpeed){
-    motorSpeedA = reverseSpeed;
+  if (motorSpeedB < reverseSpeed){
+    motorSpeedB = reverseSpeed;
   }
   // Serial.println(motorSpeedA);
   // Serial.println(motorSpeedB);

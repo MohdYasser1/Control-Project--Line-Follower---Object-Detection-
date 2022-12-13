@@ -5,11 +5,11 @@ const uint8_t SensorCount = 5;
 uint16_t sensorValues[SensorCount];
 
 //Straight Line Speed [0 --> 255]
-int baseSpeedValue = 200;
+int baseSpeedValue = 90;
 //Max Speed [0 --> 255]
-int maxSpeed = 125;
+int maxSpeed = 80;
 //Max reverse Speed [0 --> -255]
-int reverseSpeed = -75;
+int reverseSpeed = -60;
 
 //Motor Driver Varible and Connections
 int in1 = 8;
@@ -21,9 +21,9 @@ int en2 = 3;
 /////
 
 //PID parameters
-float Kp = 100;
-float Ki = 0.0006;
-float Kd = 0.7;
+float Kp = 1;
+float Ki = 0.0000;
+float Kd = 0.0;
 
 int lastError = 0;
 
@@ -41,7 +41,7 @@ void setup() {
   analogWrite(en1, LOW);
   analogWrite(en2, LOW);
   // put your setup code here, to run once:
-  // Serial.begin(9600);
+  Serial.begin(9600);
   //Sensor pins
   qtr.setTypeRC();
   qtr.setSensorPins((const uint8_t[]){A0, A1, A2, A3, A4}, SensorCount);
@@ -84,6 +84,7 @@ void setup() {
 }
 
 void loop() {
+  
     // read calibrated sensor values and obtain a measure of the line position
   // from 0 to 5000 (for a white line, use readLineWhite() instead)
   // uint16_t position = qtr.readLineBlack(sensorValues);
@@ -98,7 +99,7 @@ void loop() {
   // }
   // Serial.println(position);
 
-  // delay(250);
+  delay(250);
 
   // put your main code here, to run repeatedly:
   PID_control();
@@ -109,10 +110,15 @@ void loop() {
 void PID_control(){
   //To get a position from (0 --> 4000)
   uint16_t positionLine = qtr.readLineBlack(sensorValues);
+  // Serial.print(qtr.readLineBlack(sensorValues));
+  // Serial.println();
 
-
-  int error = 2000 - positionLine; 
-
+  int formula = 4*positionLine -6000;
+  // Serial.print(formula);
+  // Serial.println();
+  int error = 2000 - formula; 
+  // Serial.print(error);
+  // Serial.println();
   int P = error;
   int I = error + I;
   int D = error - lastError;
@@ -123,7 +129,7 @@ void PID_control(){
   //Changing speed of both motor
   //Turning Left and Right
   int motorSpeedA = baseSpeedValue + motorSpeedChange;
-  int motorSpeedB = baseSpeedValue + motorSpeedChange;
+  int motorSpeedB = baseSpeedValue - motorSpeedChange;
 
   if (motorSpeedA > maxSpeed){
     motorSpeedA = maxSpeed;
@@ -134,8 +140,8 @@ void PID_control(){
   if (motorSpeedA < reverseSpeed){
     motorSpeedA = reverseSpeed;
   }
-  if (motorSpeedA < reverseSpeed){
-    motorSpeedA = reverseSpeed;
+  if (motorSpeedB < reverseSpeed){
+    motorSpeedB = reverseSpeed;
   }
   // Serial.println(motorSpeedA);
   // Serial.println(motorSpeedB);
