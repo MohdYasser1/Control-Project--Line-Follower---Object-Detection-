@@ -5,23 +5,23 @@ const uint8_t SensorCount = 5;
 uint16_t sensorValues[SensorCount];
 
 //Straight Line Speed [0 --> 255]
-int baseSpeedValue = 90;
+int baseSpeedValue = 100;
 //Max Speed [0 --> 255]
-int maxSpeed = 80;
+int maxSpeed = 90;
 //Max reverse Speed [0 --> -255]
-int reverseSpeed = -60;
+int reverseSpeed = -80;
 
 //Motor Driver Varible and Connections
-int in1 = 8;
-int in2 = 7;
-int en1 = 9;
-int in3 = 5;
-int in4 = 4;
-int en2 = 3;
+int in3 = 8;
+int in4 = 7;
+int en2 = 9;
+int in1 = 5;
+int in2 = 4;
+int en1 = 3;
 /////
 
 //PID parameters
-float Kp = 1;
+float Kp = 0.5;
 float Ki = 0.0000;
 float Kd = 0.0;
 
