@@ -124,7 +124,7 @@ void PID_control(){
   int D = error - lastError;
   lastError = error;
 
-  int motorSpeedChange = P * Kp + I * Ki + D * Kp;
+  int motorSpeedChange = P * Kp + I * Ki + D * Kd;
 
   //Changing speed of both motor
   //Turning Left and Right

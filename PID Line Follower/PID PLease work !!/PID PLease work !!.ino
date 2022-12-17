@@ -46,8 +46,8 @@ int lineStandard = 800;
 
 //PID parameters
 float Kp = 0.6;
-float Ki = 0.0000;
-float Kd = 0.0;
+float Ki = 0;
+float Kd = 0;
 
 int lastError = 0;
 
@@ -113,7 +113,7 @@ void PID_control(int error){
   int D = error - lastError;
   lastError = error;
 
-  int motorSpeedChange = P * Kp + I * Ki + D * Kp;
+  int motorSpeedChange = P * Kp + I * Ki + D * Kd;
   int motorSpeedA = baseSpeedValue + motorSpeedChange;
   int motorSpeedB = baseSpeedValue - motorSpeedChange;
   if (motorSpeedA > maxSpeed){
