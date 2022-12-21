@@ -5,9 +5,9 @@ const uint8_t SensorCount = 5;
 uint16_t sensorValues[SensorCount];
 
 //Straight Line Speed [0 --> 255]
-int baseSpeedValue = 100;
+int baseSpeedValue = 90;
 //Max Speed [0 --> 255]
-int maxSpeed = 90;
+int maxSpeed = 200;
 //Max reverse Speed [0 --> -255]
 int reverseSpeed = -80;
 
@@ -21,9 +21,9 @@ int en1 = 3;
 /////
 
 //PID parameters
-float Kp = 0.5;
+float Kp = 0.7;
 float Ki = 0.0000;
-float Kd = 0.0;
+float Kd = 0;
 
 int lastError = 0;
 

@@ -7,6 +7,7 @@
  *to Contact for hardware or software questions 
  */
 #include <RedBot.h>
+#include <Ultrasonic.h>
 
 void right();
 void Stop ();
@@ -34,6 +35,8 @@ RedBotSensor right_sen = RedBotSensor(A4);
 #define in1 5
 #define in2 4
 int lineStandard = 800;
+
+Ultrasonic ultrasonic (12, 13);
 
 
 
@@ -106,7 +109,7 @@ void right_rev() {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 80);
+  analogWrite(en1, 60);
   analogWrite(en2, 60);
   Serial.print("RIGHT");
   Serial.println();
@@ -116,8 +119,8 @@ void right_rev_max() {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 100);
-  analogWrite(en2, 60);
+  analogWrite(en1, 180);
+  analogWrite(en2, 150);
   Serial.print("RIGHT");
   Serial.println();
 }
@@ -157,8 +160,8 @@ void left_rev() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  analogWrite(en1, 60);
-  analogWrite(en2, 80);
+  analogWrite(en1, 150);
+  analogWrite(en2, 150);
   Serial.print("LEFT");
   Serial.println();
 }
@@ -167,8 +170,8 @@ void left_rev_max() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  analogWrite(en1, 60);
-  analogWrite(en2, 100);
+  analogWrite(en1, 150);
+  analogWrite(en2, 180);
   Serial.print("LEFT");
   Serial.println();
 }
@@ -179,8 +182,8 @@ void forward() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 80);
-  analogWrite(en2, 80);
+  analogWrite(en1, 100);
+  analogWrite(en2, 100);
 }
 void back(){
   digitalWrite(in1,LOW);

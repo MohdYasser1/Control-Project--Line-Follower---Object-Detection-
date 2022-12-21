@@ -7,21 +7,28 @@
  *to Contact for hardware or software questions 
  */
 #include <RedBot.h>
+#include <Ultrasonic.h>
+
 
 //Straight Line Speed [0 --> 255]
-int baseSpeedValue = 80;
+int baseSpeedValue = 120;
 //Max Speed [0 --> 255]
-int maxSpeed = 170;
+int maxSpeed = 200;
 //Max reverse Speed [0 --> -255]
-int reverseSpeed = -80;
+int reverseSpeed = -100;
 
-int right_m, right_c, center, left_c, left_m = 0;
+int right_m = 0;
+int right_c = 0;
+int center = 0;
+int left_c = 0;
+int left_m = 0;
 
 void right();
 void Stop ();
 void left();
 void forward();
 void back();
+void turn_obs(int distance);
 
 RedBotSensor left_sen = RedBotSensor(A0);   
 RedBotSensor left_sen_c = RedBotSensor(A1);   
@@ -45,22 +52,26 @@ RedBotSensor right_sen = RedBotSensor(A4);
 int lineStandard = 800;
 
 //PID parameters
-float Kp = 0.6;
+float Kp = 0.8;
 float Ki = 0;
 float Kd = 0;
 
 int lastError = 0;
-
+ // TRIGGER = 12
+ // ECHO = 13
+Ultrasonic ultrasonic (12, 13);
+int distance;
 
 
 void setup()
-{ pinMode(in1, OUTPUT);
+{
+  Serial.begin(9600);
+  pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
   pinMode(in3, OUTPUT);
   pinMode(in4, OUTPUT);
   pinMode(en1, OUTPUT);
   pinMode(en2, OUTPUT);
-  Serial.begin(9600);
   Serial.println("IR Sensor Readings:: ");
   delay(1000);
 }
@@ -73,6 +84,14 @@ void loop()
   // Serial.print("\t"); 
   // Serial.print(right_sen.read());
   // Serial.println();
+  distance = ultrasonic.read();
+  Serial.print("Distance in CM: ");
+  if(distance == 0){
+    distance = 100;
+  }
+  Serial.println(distance);
+
+  turn_obs(distance);
 //data_sheet
   // if on the line drive left and right at the same speed (left is CCW / right is CW)
   if(center_sen.read() < lineStandard)
@@ -102,7 +121,15 @@ void loop()
   int num_of_sensors_on = right_m + right_c + center + left_c + left_m;
   int error = (center*0 + right_c *1000 + right_m *2000 + left_c*(-1000)+left_m*(-2000))/num_of_sensors_on;
   PID_control(error); 
-  right_m, right_c, center, left_c, left_m = 0;
+  // Serial.print(center);
+  // Serial.println();
+right_m = 0;
+right_c = 0;
+center = 0;
+left_c = 0;
+left_m = 0;
+// Serial.print(right_sen.read());
+// Serial.println();
   delay(0);  // add a delay to decrease sensitivity.
 
 }
@@ -155,11 +182,11 @@ else{
   analogWrite(en1, speedA);
 
   analogWrite(en2, speedB);
-  Serial.print("Speed A:");
-  Serial.print(speedA);
-  Serial.print("          SpeedB:");
-  Serial.print(speedB);
-  Serial.println();
+  // Serial.print("Speed A:");
+  // Serial.print(speedA);
+  // Serial.print("          SpeedB:");
+  // Serial.print(speedB);
+  // Serial.println();
 }
 
 
@@ -225,4 +252,28 @@ void back(){
   digitalWrite(in4,HIGH);
   analogWrite(en1, 100);
   analogWrite(en2, 100);
+}
+
+void turn_obs(int distance){
+  if(distance <= 10){
+    for (uint16_t i = 0; i < 10000; i++)
+    {
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      analogWrite(en1, 80);
+      analogWrite(en2, 200);
+    }
+    // delay(2000);
+    for (uint16_t i = 0; i < 10000; i++)
+    {
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      digitalWrite(in1, HIGH);
+      digitalWrite(in2, LOW);
+      analogWrite(en1, 200);
+      analogWrite(en2, 80);
+    }
+  }
 }
