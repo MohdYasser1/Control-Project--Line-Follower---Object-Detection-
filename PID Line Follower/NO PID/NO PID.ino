@@ -109,8 +109,8 @@ void right_rev() {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 60);
-  analogWrite(en2, 60);
+  analogWrite(en1, 120);
+  analogWrite(en2, 120);
   Serial.print("RIGHT");
   Serial.println();
 }
@@ -119,8 +119,8 @@ void right_rev_max() {
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 180);
-  analogWrite(en2, 150);
+  analogWrite(en1, 150);
+  analogWrite(en2, 120);
   Serial.print("RIGHT");
   Serial.println();
 }
@@ -160,8 +160,8 @@ void left_rev() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  analogWrite(en1, 150);
-  analogWrite(en2, 150);
+  analogWrite(en1, 120);
+  analogWrite(en2, 120);
   Serial.print("LEFT");
   Serial.println();
 }
@@ -170,8 +170,8 @@ void left_rev_max() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  analogWrite(en1, 150);
-  analogWrite(en2, 180);
+  analogWrite(en1, 120);
+  analogWrite(en2, 150);
   Serial.print("LEFT");
   Serial.println();
 }
@@ -182,8 +182,8 @@ void forward() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 100);
-  analogWrite(en2, 100);
+  analogWrite(en1, 80);
+  analogWrite(en2, 80);
 }
 void back(){
   digitalWrite(in1,LOW);

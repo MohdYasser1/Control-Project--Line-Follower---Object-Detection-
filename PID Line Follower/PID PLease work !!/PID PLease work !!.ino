@@ -11,11 +11,11 @@
 
 
 //Straight Line Speed [0 --> 255]
-int baseSpeedValue = 120;
+int baseSpeedValue = 80;
 //Max Speed [0 --> 255]
-int maxSpeed = 200;
+int maxSpeed = 120;
 //Max reverse Speed [0 --> -255]
-int reverseSpeed = -100;
+int reverseSpeed = -120;
 
 int right_m = 0;
 int right_c = 0;
@@ -52,7 +52,7 @@ RedBotSensor right_sen = RedBotSensor(A4);
 int lineStandard = 800;
 
 //PID parameters
-float Kp = 0.8;
+float Kp = 0.085;
 float Ki = 0;
 float Kd = 0;
 
@@ -90,8 +90,10 @@ void loop()
     distance = 100;
   }
   Serial.println(distance);
-
-  turn_obs(distance);
+  if(distance <= 20){
+    turn();
+  }
+  // turn_obs(distance);
 //data_sheet
   // if on the line drive left and right at the same speed (left is CCW / right is CW)
   if(center_sen.read() < lineStandard)
@@ -201,11 +203,11 @@ void right_rev() {
   Serial.print("RIGHT");
 }
 void right() {
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 150);
+  analogWrite(en1, 200);
   analogWrite(en2, 200);
   Serial.print("RIGHT");
 }
@@ -222,10 +224,10 @@ void Stop () {
 void left() {
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
   analogWrite(en1, 200);
-  analogWrite(en2, 150);
+  analogWrite(en2, 200);
   Serial.print("LEFT");}
 void left_rev() {
   digitalWrite(in1, HIGH);
@@ -242,8 +244,8 @@ void forward() {
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 100);
-  analogWrite(en2, 100);
+  analogWrite(en1, 200);
+  analogWrite(en2, 200);
 }
 void back(){
   digitalWrite(in1,LOW);
@@ -256,24 +258,28 @@ void back(){
 
 void turn_obs(int distance){
   if(distance <= 10){
-    for (uint16_t i = 0; i < 10000; i++)
-    {
       digitalWrite(in1, HIGH);
       digitalWrite(in2, LOW);
-      digitalWrite(in1, HIGH);
-      digitalWrite(in2, LOW);
+      digitalWrite(in3, HIGH);
+      digitalWrite(in4, LOW);
       analogWrite(en1, 80);
       analogWrite(en2, 200);
-    }
-    // delay(2000);
-    for (uint16_t i = 0; i < 10000; i++)
-    {
+     delay(10000);
       digitalWrite(in1, HIGH);
       digitalWrite(in2, LOW);
-      digitalWrite(in1, HIGH);
-      digitalWrite(in2, LOW);
+      digitalWrite(in3, HIGH);
+      digitalWrite(in4, LOW);
       analogWrite(en1, 200);
       analogWrite(en2, 80);
-    }
+      delay(10000);
   }
+}
+void turn(){
+  Serial.println("turn Right");
+  left();
+  delay(150);
+  forward();
+  delay(500);
+  right();
+  delay(500);
 }
