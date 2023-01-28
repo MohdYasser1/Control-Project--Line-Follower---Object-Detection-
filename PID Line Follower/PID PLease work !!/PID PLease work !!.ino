@@ -11,17 +11,17 @@
 
 
 //Straight Line Speed [0 --> 255]
-int baseSpeedValue = 80;
+int baseSpeedValue = 70;
 //Max Speed [0 --> 255]
-int maxSpeed = 120;
+int maxSpeed = 85;
 //Max reverse Speed [0 --> -255]
-int reverseSpeed = -120;
+int reverseSpeed = -165;
 
-int right_m = 0;
+//int right_m = 0;
 int right_c = 0;
 int center = 0;
 int left_c = 0;
-int left_m = 0;
+//int left_m = 0;
 
 void right();
 void Stop ();
@@ -30,11 +30,11 @@ void forward();
 void back();
 void turn_obs(int distance);
 
-RedBotSensor left_sen = RedBotSensor(A0);   
+//RedBotSensor left_sen = RedBotSensor(A0);   
 RedBotSensor left_sen_c = RedBotSensor(A1);   
 RedBotSensor center_sen = RedBotSensor(A2); 
 RedBotSensor right_sen_c = RedBotSensor(A3);  
-RedBotSensor right_sen = RedBotSensor(A4);  
+//RedBotSensor right_sen = RedBotSensor(A4);  
 //data_sheet
 // constants that are used in the code. lineStandard is the level to detect 
 // if the sensor is on the line or not. If the sensor value is greater than this
@@ -52,7 +52,7 @@ RedBotSensor right_sen = RedBotSensor(A4);
 int lineStandard = 800;
 
 //PID parameters
-float Kp = 0.085;
+float Kp = 0.095;
 float Ki = 0;
 float Kd = 0;
 
@@ -85,11 +85,11 @@ void loop()
   // Serial.print(right_sen.read());
   // Serial.println();
   distance = ultrasonic.read();
-  Serial.print("Distance in CM: ");
+  // Serial.print("Distance in CM: ");
   if(distance == 0){
     distance = 100;
   }
-  Serial.println(distance);
+  // Serial.println(distance);
   if(distance <= 20){
     turn();
   }
@@ -100,28 +100,29 @@ void loop()
   {//right
    center = 1;
   }
-  else if(right_sen_c.read() < lineStandard)
+  if(right_sen_c.read() < lineStandard)
   {//left
     right_c = 1;
   }
   //data_sheet
   // if the line is under the right sensor, adjust relative speeds to turn to the right
-  else if(right_sen.read() < lineStandard)
-  {//left
-  right_m = 1;
-  }
+  // if(right_sen.read() < lineStandard)
+  // {//left
+  // right_m = 1;
+  // }
   //data_sheet
   // if the line is under the left sensor, adjust relative speeds to turn to the left
-  else if(left_sen_c.read() < lineStandard)
+  if(left_sen_c.read() < lineStandard)
   {//right
   left_c = 1;
   }
-  else if(left_sen.read() < lineStandard)
-  {//right
-  left_m = 1;
-  }
-  int num_of_sensors_on = right_m + right_c + center + left_c + left_m;
-  int error = (center*0 + right_c *1000 + right_m *2000 + left_c*(-1000)+left_m*(-2000))/num_of_sensors_on;
+  // if(left_sen.read() < lineStandard)
+  // {//right
+  // left_m = 1;
+  // }
+  // int num_of_sensors_on = right_m + right_c + center + left_c + left_m;
+  int num_of_sensors_on = right_c + center + left_c;
+  int error = (center*0 + right_c *1000  + left_c*(-1000)))/num_of_sensors_on;
   PID_control(error); 
   // Serial.print(center);
   // Serial.println();
@@ -184,11 +185,11 @@ else{
   analogWrite(en1, speedA);
 
   analogWrite(en2, speedB);
-  // Serial.print("Speed A:");
-  // Serial.print(speedA);
-  // Serial.print("          SpeedB:");
-  // Serial.print(speedB);
-  // Serial.println();
+  Serial.print("Speed A:");
+  Serial.print(speedA);
+  Serial.print("          SpeedB:");
+  Serial.print(speedB);
+  Serial.println();
 }
 
 
