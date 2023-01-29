@@ -1,14 +1,25 @@
-/*created by Mostafa Zaghloul with a helper library called RedBot.h you can find 
- * it on this link https://github.com/sparkfun/RedBot 
- *--------------------------- thanks a million --------------------------------- 
- *you can find me on 
- *FaceBook::https://www.facebook.com/mostafa.zaghlol3
- *Twitter::https://twitter.com/Mostafazaghlul
- *to Contact for hardware or software questions 
- */
 #include <RedBot.h>
 #include <Ultrasonic.h>
 
+
+int right_c = 0;
+int center = 0;
+int left_c = 0;
+int left_m = 0;
+
+void right();
+void Stop ();
+void left();
+void forward();
+void back();
+void left_rev_m();
+void turn_obs(int distance);
+void left_t();
+void right_t();
+void forward();
+
+
+void turn_obs(int distance);
 
 //Straight Line Speed [0 --> 255]
 int baseSpeedValue = 70;
@@ -17,31 +28,13 @@ int maxSpeed = 85;
 //Max reverse Speed [0 --> -255]
 int reverseSpeed = -165;
 
-//int right_m = 0;
-int right_c = 0;
-int center = 0;
-int left_c = 0;
-//int left_m = 0;
+RedBotSensor left_sen = RedBotSensor(A0);   
 
-void right();
-void Stop ();
-void left();
-void forward();
-void back();
-void turn_obs(int distance);
-
-//RedBotSensor left_sen = RedBotSensor(A0);   
 RedBotSensor left_sen_c = RedBotSensor(A1);   
 RedBotSensor center_sen = RedBotSensor(A2); 
-RedBotSensor right_sen_c = RedBotSensor(A3);  
-//RedBotSensor right_sen = RedBotSensor(A4);  
-//data_sheet
-// constants that are used in the code. lineStandard is the level to detect 
-// if the sensor is on the line or not. If the sensor value is greater than this
-// the sensor is above a DARK line.
-//
-// SPEED sets the nominal speed
-//motor A
+RedBotSensor right_sen_c = RedBotSensor(A3);
+
+
 #define en2 9
 #define in3 8
 #define in4 7
@@ -51,20 +44,19 @@ RedBotSensor right_sen_c = RedBotSensor(A3);
 #define in2 4
 int lineStandard = 800;
 
-//PID parameters
 float Kp = 0.095;
 float Ki = 0;
 float Kd = 0;
-
 int lastError = 0;
- // TRIGGER = 12
- // ECHO = 13
+
+
+// TRIGGER = 12
+// ECHO = 13
 Ultrasonic ultrasonic (12, 13);
 int distance;
 
-
-void setup()
-{
+void setup() {
+  // put your setup code here, to run once:
   Serial.begin(9600);
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
@@ -74,35 +66,75 @@ void setup()
   pinMode(en2, OUTPUT);
   Serial.println("IR Sensor Readings:: ");
   delay(1000);
+
 }
 
-void loop()
-{
-  // Serial.print(left_sen.read());
-  // Serial.print("\t");  
-  // Serial.print(center_sen.read());
-  // Serial.print("\t"); 
-  // Serial.print(right_sen.read());
-  // Serial.println();
+void loop() {
   distance = ultrasonic.read();
   Serial.print("Distance in CM: ");
   if(distance == 0){
     distance = 100;
   }
   Serial.println(distance);
+
   if(distance <= 20){
     turn();
   }
-  // turn_obs(distance);
-//data_sheet
-  // if on the line drive left and right at the same speed (left is CCW / right is CW)
-  if(center_sen.read() < lineStandard)
+
+  // put your main code here, to run repeatedly:
+  if(left_sen_c.read() < lineStandard && right_sen_c.read() < lineStandard && center_sen.read() < lineStandard)
   {//right
-   center = 1;
-  }
-  if(right_sen_c.read() < lineStandard)
-  {//left
+    center = 1;
     right_c = 1;
+    left_c = 1;
+    forward();
+  }
+  else if(left_sen_c.read() < lineStandard && center_sen.read() < lineStandard)
+  {//right
+    center = 1;
+    right_c = 0;
+    left_c = 1;
+    right();
+  }
+  else if(right_sen_c.read() < lineStandard && center_sen.read() < lineStandard)
+  {//right
+    center = 1;
+    right_c = 1;
+    left_c = 0;
+    left();
+  }
+
+
+  else if(left_sen_c.read() < lineStandard)
+  {//right
+    center = 0;
+    right_c = 0;
+    left_c = 1;
+    right_rev();
+  }
+  else if(right_sen_c.read() < lineStandard)
+  {//left
+    center = 0;
+    right_c = 1;
+    left_c = 0;
+    left_rev();
+  }
+
+  else if(center_sen.read() < lineStandard)
+  {//right
+    center = 1;
+    right_c = 0;
+    left_c = 0;
+    forward();
+
+  }
+  else if(left_sen.read() < lineStandard)
+  {//right
+    center = 0;
+    right_c = 0;
+    left_c = 0;
+    left_m = 1;
+    right_rev();
   }
   //data_sheet
   // if the line is under the right sensor, adjust relative speeds to turn to the right
@@ -112,10 +144,6 @@ void loop()
   // }
   //data_sheet
   // if the line is under the left sensor, adjust relative speeds to turn to the left
-  if(left_sen_c.read() < lineStandard)
-  {//right
-  left_c = 1;
-  }
   // if(left_sen.read() < lineStandard)
   // {//right
   // left_m = 1;
@@ -123,20 +151,11 @@ void loop()
   // int num_of_sensors_on = right_m + right_c + center + left_c + left_m;
   int num_of_sensors_on = right_c + center + left_c;
   int error = (center*0 + right_c *1000  + left_c*(-1000))/num_of_sensors_on;
-  PID_control(error); 
-  // Serial.print(center);
-  // Serial.println();
-// right_m = 0;
-right_c = 0;
-center = 0;
-left_c = 0;
-// left_m = 0;
-// Serial.print(right_sen.read());
-// Serial.println();
+    // PID_control(error); 
   delay(0);  // add a delay to decrease sensitivity.
 
-}
 
+}
 void PID_control(int error){
   int P = error;
   int I = error + I;
@@ -191,72 +210,62 @@ else{
   Serial.print(speedB);
   Serial.println();
 }
-
-
+///////////////////////////////////////////////////////////////////////// HERE WE GO 
 
 void right_rev() {
   digitalWrite(in1, LOW);
   digitalWrite(in2, HIGH);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 80);
-  analogWrite(en2, 180);
+  analogWrite(en1, 80); ////rev1
+  analogWrite(en2, 80);////fwd1
   Serial.print("RIGHT");
 }
-void right() {
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, HIGH);
-  digitalWrite(in3, HIGH);
-  digitalWrite(in4, LOW);
-  analogWrite(en1, 200);
-  analogWrite(en2, 200);
-  Serial.print("RIGHT");
-}
-
-void Stop () {
-  digitalWrite(in1, LOW);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, LOW);
-  analogWrite(en1, 0);
-  analogWrite(en2, 0);
-
-}
-void left() {
-  digitalWrite(in1, HIGH);
-  digitalWrite(in2, LOW);
-  digitalWrite(in3, LOW);
-  digitalWrite(in4, HIGH);
-  analogWrite(en1, 200);
-  analogWrite(en2, 200);
-  Serial.print("LEFT");}
 void left_rev() {
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
   digitalWrite(in3, LOW);
   digitalWrite(in4, HIGH);
-  analogWrite(en1, 180);
-  analogWrite(en2, 80);
+  analogWrite(en1, 80);///fwd2
+  analogWrite(en2, 80);//rev2
   Serial.print("LEFT");
 }
-
 void forward() {
   digitalWrite(in1, HIGH);
   digitalWrite(in2, LOW);
   digitalWrite(in3, HIGH);
   digitalWrite(in4, LOW);
-  analogWrite(en1, 200);
-  analogWrite(en2, 200);
+  analogWrite(en1, 85);//fwd_base
+  analogWrite(en2, 85);//fwd_base
 }
-void back(){
-  digitalWrite(in1,LOW);
-  digitalWrite(in2,HIGH);
-  digitalWrite(in3,LOW);
-  digitalWrite(in4,HIGH);
-  analogWrite(en1, 100);
-  analogWrite(en2, 100);
+void right() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  analogWrite(en1, 100);//speedup1
+  analogWrite(en2, 65);//speeddwn1
+  Serial.print("RIGHT");
 }
-
+void left() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  analogWrite(en1, 65);//speeddwn2
+  analogWrite(en2, 100);//speedup2
+  Serial.print("LEFT");
+}
+///////////////////////////////////////////////////////////////////////////////////////
+void left_rev_m() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+  analogWrite(en1, 80);
+  analogWrite(en2, 150);
+  Serial.print("LEFT");
+}
 void turn_obs(int distance){
   if(distance <= 10){
       digitalWrite(in1, HIGH);
@@ -277,10 +286,39 @@ void turn_obs(int distance){
 }
 void turn(){
   Serial.println("turn Right");
-  left();
+  left_t();
   delay(150);
   forward();
   delay(500);
-  right();
+  right_t();
   delay(500);
 }
+void left_t() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, LOW);
+  digitalWrite(in4, HIGH);
+  analogWrite(en1, 200);
+  analogWrite(en2, 200);
+  Serial.print("LEFT");}
+void right_t() {
+  digitalWrite(in1, LOW);
+  digitalWrite(in2, HIGH);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  analogWrite(en1, 200);
+  analogWrite(en2, 200);
+  Serial.print("RIGHT");
+}
+void forward_t() {
+  digitalWrite(in1, HIGH);
+  digitalWrite(in2, LOW);
+  digitalWrite(in3, HIGH);
+  digitalWrite(in4, LOW);
+  analogWrite(en1, 200);
+  analogWrite(en2, 200);
+}
+
+
+
+

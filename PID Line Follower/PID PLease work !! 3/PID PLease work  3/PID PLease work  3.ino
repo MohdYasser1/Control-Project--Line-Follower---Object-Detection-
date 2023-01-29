@@ -85,11 +85,11 @@ void loop()
   // Serial.print(right_sen.read());
   // Serial.println();
   distance = ultrasonic.read();
-  Serial.print("Distance in CM: ");
+  // Serial.print("Distance in CM: ");
   if(distance == 0){
     distance = 100;
   }
-  Serial.println(distance);
+  // Serial.println(distance);
   if(distance <= 20){
     turn();
   }
