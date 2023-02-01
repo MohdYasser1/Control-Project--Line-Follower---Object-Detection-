@@ -82,13 +82,7 @@ void loop() {
   }
 
   // put your main code here, to run repeatedly:
-  if(left_sen_c.read() >= lineStandard && right_sen_c.read() >= lineStandard && center_sen.read() >= lineStandard && left_sen.read() >= lineStandard){
-    center = 1;
-    right_c = 1;
-    left_c = 1;
-    forward();
-  }
-  else if(left_sen_c.read() < lineStandard && right_sen_c.read() < lineStandard && center_sen.read() < lineStandard)
+  if(left_sen_c.read() < lineStandard && right_sen_c.read() < lineStandard && center_sen.read() < lineStandard)
   {//right
     center = 1;
     right_c = 1;
@@ -109,8 +103,6 @@ void loop() {
     left_c = 0;
     left();
   }
-
-
   else if(left_sen_c.read() < lineStandard)
   {//right
     center = 0;
@@ -125,14 +117,12 @@ void loop() {
     left_c = 0;
     left_rev();
   }
-
   else if(center_sen.read() < lineStandard)
   {//right
     center = 1;
     right_c = 0;
     left_c = 0;
     forward();
-
   }
   else if(left_sen.read() < lineStandard)
   {//right
@@ -142,6 +132,13 @@ void loop() {
     left_m = 1;
     right_rev();
   }
+  else if(left_sen_c.read() >= lineStandard && right_sen_c.read() >= lineStandard && center_sen.read() >= lineStandard && left_sen.read() >= lineStandard){
+    center = 1;
+    right_c = 1;
+    left_c = 1;
+    forward();
+  }
+
   //data_sheet
   // if the line is under the right sensor, adjust relative speeds to turn to the right
   // if(right_sen.read() < lineStandard)
