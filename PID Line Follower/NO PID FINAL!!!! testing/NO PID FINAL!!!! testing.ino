@@ -132,12 +132,6 @@ void loop() {
     left_m = 1;
     right_rev();
   }
-  else{
-    center = 1;
-    right_c = 1;
-    left_c = 1;
-    forward();
-  }
 
   //data_sheet
   // if the line is under the right sensor, adjust relative speeds to turn to the right
@@ -295,6 +289,9 @@ void turn(){
   delay(500);
   right_t();
   delay(500);
+  while (right_sen_c.read() >= lineStandard && center_sen.read() >= lineStandard && left_sen_c.read() >= lineStandard && left_sen.read() >= lineStandard){
+    forward();
+  }
 }
 void left_t() {
   digitalWrite(in1, HIGH);
