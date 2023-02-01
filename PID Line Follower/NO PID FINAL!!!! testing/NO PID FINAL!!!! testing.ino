@@ -14,12 +14,12 @@ void forward();
 void back();
 void left_rev_m();
 void turn_obs(int distance);
+void turn();
 void left_t();
 void right_t();
 void forward_t();
 
 
-void turn_obs(int distance);
 
 //Straight Line Speed [0 --> 255]
 int baseSpeedValue = 70;
