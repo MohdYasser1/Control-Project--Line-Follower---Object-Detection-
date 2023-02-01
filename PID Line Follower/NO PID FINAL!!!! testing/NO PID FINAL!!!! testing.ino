@@ -16,7 +16,7 @@ void left_rev_m();
 void turn_obs(int distance);
 void left_t();
 void right_t();
-void forward();
+void forward_t();
 
 
 void turn_obs(int distance);
@@ -294,7 +294,7 @@ void turn(){
   Serial.println("turn Right");
   left_t();
   delay(150);
-  forward();
+  forward_t();
   delay(500);
   right_t();
   delay(500);
