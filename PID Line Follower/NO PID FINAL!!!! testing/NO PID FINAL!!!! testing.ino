@@ -82,7 +82,13 @@ void loop() {
   }
 
   // put your main code here, to run repeatedly:
-  if(left_sen_c.read() < lineStandard && right_sen_c.read() < lineStandard && center_sen.read() < lineStandard)
+  if(left_sen_c.read() >= lineStandard && right_sen_c.read() >= lineStandard && center_sen.read() >= lineStandard){
+    center = 1;
+    right_c = 1;
+    left_c = 1;
+    forward();
+  }
+  else if(left_sen_c.read() < lineStandard && right_sen_c.read() < lineStandard && center_sen.read() < lineStandard)
   {//right
     center = 1;
     right_c = 1;
