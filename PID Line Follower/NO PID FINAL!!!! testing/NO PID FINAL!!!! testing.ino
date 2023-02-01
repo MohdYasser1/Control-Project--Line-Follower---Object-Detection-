@@ -132,7 +132,7 @@ void loop() {
     left_m = 1;
     right_rev();
   }
-  else if(left_sen_c.read() >= lineStandard && right_sen_c.read() >= lineStandard && center_sen.read() >= lineStandard && left_sen.read() >= lineStandard){
+  else{
     center = 1;
     right_c = 1;
     left_c = 1;
